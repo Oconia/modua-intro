@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://modua.co.kr/</loc>
+    <image:image><image:loc>https://modua.co.kr/share/thumbs/page.jpg</image:loc></image:image>
+    <image:image><image:loc>https://modua.co.kr/Modua_Share.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://modua.co.kr/share/media</loc>
+    <image:image><image:loc>https://modua.co.kr/share/thumbs/media.jpg</image:loc></image:image>
+    <image:image><image:loc>https://modua.co.kr/media/dream.png</image:loc></image:image>
+    <image:image><image:loc>https://modua.co.kr/media/jjaim-short.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://modua.co.kr/share/dream</loc>
+    <image:image><image:loc>https://modua.co.kr/share/thumbs/dream.jpg</image:loc></image:image>
+    <image:image><image:loc>https://modua.co.kr/media/dream.png</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://modua.co.kr/share/sinjeong</loc>
+    <image:image><image:loc>https://modua.co.kr/share/thumbs/sinjeong.jpg</image:loc></image:image>
+    <image:image><image:loc>https://modua.co.kr/media/sinjeong.png</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://modua.co.kr/share/jjaim-short</loc>
+    <image:image><image:loc>https://modua.co.kr/share/thumbs/jjaim-short.jpg</image:loc></image:image>
+    <image:image><image:loc>https://modua.co.kr/media/jjaim-short.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://modua.co.kr/share/daily</loc>
+    <image:image><image:loc>https://modua.co.kr/share/thumbs/daily.jpg</image:loc></image:image>
+    <image:image><image:loc>https://modua.co.kr/media/daily.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://modua.co.kr/share/teams</loc>
+    <image:image><image:loc>https://modua.co.kr/share/thumbs/teams.jpg</image:loc></image:image>
+    <image:image><image:loc>https://modua.co.kr/media/teams.jpg</image:loc></image:image>
+  </url>
+</urlset>

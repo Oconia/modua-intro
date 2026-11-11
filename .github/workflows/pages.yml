@@ -1,0 +1,37 @@
+name: Deploy Modua intro to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: '30 1 1 * *'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read the published media feed
+        run: curl --fail --silent --show-error --retry 3 --max-time 30 https://modua.co.kr/media-feed.json -o "$RUNNER_TEMP/modua-feed.json"
+      - name: Build the public site
+        run: |
+          node scripts/build-share-pages.mjs
+          node scripts/build-pages.mjs "$RUNNER_TEMP/modua-feed.json"
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/pages
+      - id: deployment
+        uses: actions/deploy-pages@v4
