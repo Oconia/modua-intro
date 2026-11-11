@@ -19,6 +19,8 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      PAGES_ARTIFACT: github-pages-${{ github.run_attempt }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -32,6 +34,9 @@ jobs:
           node scripts/build-pages.mjs "$RUNNER_TEMP/modua-feed.json"
       - uses: actions/upload-pages-artifact@v3
         with:
+          name: ${{ env.PAGES_ARTIFACT }}
           path: dist/pages
       - id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: ${{ env.PAGES_ARTIFACT }}
