@@ -222,31 +222,6 @@ main>.hero{padding-block:var(--intro-gap) 0}.hero-grid{display:grid;grid-templat
   padding-top: 6px;
   background: none;
 }
-/* Very tall screens keep the entire portrait frame visible, including edge text. */
-@media (min-aspect-ratio: 4/9) and (max-aspect-ratio: 2/3) {
-  .video-dialog[data-orientation="portrait"] :is(.viewer-poster, .viewer-video) {
-    object-fit: cover;
-  }
-  .video-dialog[data-playback="embedded"][data-orientation="portrait"] .viewer-content {
-    display: block;
-    padding-top: 0;
-  }
-  .video-dialog[data-orientation="portrait"] .viewer-stage[data-embedded] .viewer-embed {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: max(100cqw, calc(100cqh * var(--video-ratio)));
-    height: max(100cqh, calc(100cqw / var(--video-ratio)));
-    min-height: 0;
-    max-height: none;
-    transform: translate(-50%, -50%);
-  }
-  .video-dialog[data-playback="embedded"][data-orientation="portrait"] .viewer-footer {
-    position: absolute;
-    padding-top: 22px;
-    background: linear-gradient(transparent, #0b1723ec);
-  }
-}
 .viewer-caption {
   display: flex;
   align-items: end;
