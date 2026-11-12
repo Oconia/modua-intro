@@ -3,6 +3,9 @@ const keyPattern = /^(?:auto-[a-f0-9]{24}|(?:video|short)-[A-Za-z0-9_-]{11})$/;
 const youtubePattern = /^[A-Za-z0-9_-]{11}$/;
 const staticKey = /^(?:video|short)-/;
 const bundles = new Set(['yvjd1Mu7uRU', 'l4s5wGW3_p8', 'lOIJRPKtwfY', 'CfFCtXU1UTI', 'BUsuA3uuC1c']);
+// The Sites build fills these maps from the published files.
+const publishedPages = {};
+const publishedVideoSizes = {};
 export const documentPolicy = [
   "default-src 'none'",
   "base-uri 'self'",
@@ -240,17 +243,20 @@ function sliceStream(source, start, end) {
 
 async function serveVideo(request, env) {
   const url = new URL(request.url);
+  const videoPath = url.pathname;
   url.pathname = url.pathname.replace(/^\/media\//, '/_video/');
   const requestHeaders = new Headers(request.headers);
   const range = requestHeaders.get('Range');
   const ifRange = requestHeaders.get('If-Range');
   requestHeaders.delete('Range');
   requestHeaders.delete('If-Range');
+  requestHeaders.set('Accept-Encoding', 'identity');
   const response = await env.ASSETS.fetch(new Request(url, { method: request.method, headers: requestHeaders }));
   if (response.status !== 200) return response;
   const headers = new Headers(response.headers);
-  const size = Number(headers.get('Content-Length') ?? NaN);
-  if (!Number.isSafeInteger(size) || size < 0 || headers.has('Content-Encoding')) return response;
+  const size = publishedVideoSizes[videoPath] ?? Number(headers.get('Content-Length') ?? NaN);
+  const encoding = headers.get('Content-Encoding');
+  if (!Number.isSafeInteger(size) || size < 0 || (encoding && encoding !== 'identity')) return response;
   headers.set('Accept-Ranges', 'bytes');
   const part = request.method === 'GET' && range && canSendRange(ifRange, headers) ? parseRange(range, size) : null;
   if (part === null) return new Response(response.body, { status: 200, headers });
@@ -272,8 +278,28 @@ async function serveVideo(request, env) {
   return new Response(sliced, { status: 206, headers });
 }
 
+function servePage(request, url) {
+  const path = url.pathname;
+  const candidate = path === '/' || path === '/index' ? '/index.html' : path.endsWith('.html') ? path : path + '.html';
+  const page = publishedPages[candidate];
+  if (!page) return null;
+  if (path === '/index' || path.endsWith('.html')) {
+    const canonical = candidate === '/index.html' ? '/' : candidate.slice(0, -5);
+    return new Response(null, { status: 308, headers: { Location: canonical + url.search } });
+  }
+  const headers = {
+    'Content-Type': 'text/html; charset=utf-8',
+    'Cache-Control': 'public, max-age=0, must-revalidate',
+    ETag: page.etag,
+  };
+  const unchanged = request.headers.get('If-None-Match') === page.etag;
+  const body = request.method === 'HEAD' || unchanged ? null : page.html;
+  return new Response(body, { status: unchanged ? 304 : 200, headers });
+}
+
 async function route(request, env) {
-  const { pathname } = new URL(request.url);
+  const url = new URL(request.url);
+  const { pathname } = url;
   if (request.method === 'GET' && (pathname === '/media-feed.json' || pathname === '/api/media')) {
     return json(await status(env));
   }
@@ -281,8 +307,10 @@ async function route(request, env) {
     return json({ error: '연결된 모두아 도구에서 미디어를 동기화해 주세요.' }, 403);
   }
   if (pathname === '/mcp') return mcp(request, env);
-  if ((request.method === 'GET' || request.method === 'HEAD') && /^\/media\/[a-z0-9-]+\.mp4$/.test(pathname)) {
-    return serveVideo(request, env);
+  if (request.method === 'GET' || request.method === 'HEAD') {
+    if (/^\/media\/[a-z0-9-]+\.mp4$/.test(pathname)) return serveVideo(request, env);
+    const page = servePage(request, url);
+    if (page) return page;
   }
   return env.ASSETS.fetch(request);
 }
