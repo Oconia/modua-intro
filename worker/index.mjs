@@ -92,7 +92,7 @@ async function readSource() {
   const rewriter = new HTMLRewriter();
   for (const [index, selector] of ['#mgo-video-track', '#mgo-shorts-track'].entries()) {
     rewriter.on(selector, { element() { tracks[index] = true; } });
-    rewriter.on(selector + ' button[data-share-keys]', {
+    rewriter.on(selector + ' [data-share-keys][data-source]', {
       element(button) {
         const video = sourceVideo(button, index === 1);
         if (video && !catalog.has(video.youtubeId)) catalog.set(video.youtubeId, video);
