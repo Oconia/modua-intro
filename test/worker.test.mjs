@@ -48,7 +48,7 @@ function mediaFixture(t, previous, upstream) {
             'aria-label': 'Audit video',
             'data-source': 'https://www.youtube.com/watch?v=' + youtubeId,
           };
-          this.handlers.get(track + ' button[data-share-keys]').element({ getAttribute: name => attrs[name] });
+          this.handlers.get(track + ' [data-share-keys][data-source]').element({ getAttribute: name => attrs[name] });
         }
       }
       return response;
